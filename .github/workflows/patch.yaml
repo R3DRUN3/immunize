@@ -56,23 +56,14 @@ jobs:
         #   run: |
         #     docker push ${{ steps.copa.outputs.patched-image }}
 
-        - name: Save Patched Image Locally
+        - name: Login to GitHub Container Registry
           if: steps.copa.conclusion == 'success'
+          id: login
+          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+        - name: Docker Push Patched Image to GitHub Container Registry
+          if: steps.login.conclusion == 'success'
           run: |
-            original_image_name=$(echo "${{ matrix.images }}" | sed 's/\//_/g' | sed 's/:/_/')
-            mkdir -p "${GITHUB_WORKSPACE}/patched"
-            docker save -o "${GITHUB_WORKSPACE}/patched/${original_image_name}_patched.tar" ${{ steps.copa.outputs.patched-image }}
-            ls -l "${GITHUB_WORKSPACE}/patched"
-            mv "${GITHUB_WORKSPACE}/patched/${original_image_name}_patched.tar" "${GITHUB_WORKSPACE}/patched/"
-            ls -l "${GITHUB_WORKSPACE}/patched"
+            docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.copa.outputs.patched-tag }}
+            docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.copa.outputs.patched-tag }}
 
-
-
-
-
-        - name: Upload Patched Image as Artifact
-          if: steps.copa.conclusion == 'success'
-          uses: actions/upload-artifact@v2
-          with:
-            name: patched-images
-            path: patched
