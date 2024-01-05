@@ -64,6 +64,6 @@ jobs:
         - name: Docker Push Patched Image to GitHub Container Registry
           if: steps.login.conclusion == 'success'
           run: |
-            docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.copa.outputs.patched-tag }}
+            docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/${{ github.repository_owner | lower }}/${{ github.event.repository.name | lower }}:${{ steps.copa.outputs.patched-tag }}
             docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.copa.outputs.patched-tag }}
 
