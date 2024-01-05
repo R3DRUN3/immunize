@@ -44,6 +44,8 @@ jobs:
             copa-version: '0.3.0'
 
         - name: Log into ghcr
+          if: steps.copa.conclusion == 'success'
+          id: login
           uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
           with:
             registry: ghcr.io
