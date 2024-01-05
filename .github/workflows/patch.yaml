@@ -7,7 +7,6 @@ jobs:
         strategy:
           fail-fast: false
           matrix:
-            # provide relevant list of images to scan on each run
             images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
         steps:
@@ -40,12 +39,18 @@ jobs:
             image-report: 'report.json'
             patched-tag: 'patched'
             buildkit-version: 'v0.11.6'
-            # optional, default is latest
             copa-version: '0.3.0'
 
-        - name: Convert Repository Name to Lowercase
-          id: lowercase
-          run: echo "::set-output name=name::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
+        - name: Modify Patched Image Names
+          id: modify_images
+          run: |
+            PATCHED_IMAGES=""
+            for image in "${{ matrix.images[@] }}"; do
+              # Modify image names based on your requirements
+              patched_image="docker.io/r3drun3/$(basename $image)-immunized"
+              PATCHED_IMAGES="$PATCHED_IMAGES $patched_image"
+            done
+            echo "patched_images=$PATCHED_IMAGES" >> $GITHUB_ENV
 
         - name: Login to Docker Hub
           if: steps.copa.conclusion == 'success'
@@ -55,13 +60,9 @@ jobs:
             username: r3drun3
             password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - name: Docker Push Patched Image
+        - name: Docker Push Patched Images
           if: steps.login.conclusion == 'success'
           run: |
-            original_image=${{ matrix.images }}
-            patched_image=$(echo $original_image | sed 's/docker.io\/library\//docker.io\/r3drun3\//')-patched
-            docker tag ${{ steps.copa.outputs.patched-image }} $patched_image
-            docker push $patched_image
-
-
-
+            for patched_image in $PATCHED_IMAGES; do
+              docker push $patched_image
+            done
