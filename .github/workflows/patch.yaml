@@ -61,7 +61,10 @@ jobs:
           run: |
             original_image_name=$(echo "${{ matrix.images }}" | sed 's/\//_/g' | sed 's/:/_/')
             docker save -o "${original_image_name}_patched.tar" ${{ steps.copa.outputs.patched-image }}
+            ls -l patched
             mv "${original_image_name}_patched.tar" patched/
+            ls -l patched
+
 
 
         - name: Upload Patched Image as Artifact
