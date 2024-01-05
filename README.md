@@ -9,7 +9,7 @@ The present is a repository containing a [Github action](https://github.com/feat
 
 The pipeline is triggered upon a push to the *main* branch.  
 The corresponding action is configured in the `.github/workflows/patch.yaml` file.  
-Specifically, the list of container images is specified within the strategy as follows:
+Specifically, the list of container images to patch is specified within the strategy as follows:
 
 ```yaml
 images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
@@ -28,16 +28,17 @@ Following are the steps in the pipeline:
 
 4. **Copa Action**
    - Action: `project-copacetic/copa-action`
-   - Description: Runs Copa Action to handle vulnerabilities based on the Trivy report. If vulnerabilities are present, it immunizes the image.
+   - Description: Runs Copa Action to handle vulnerabilities based on the Trivy report.  
+   If vulnerabilities are present, it immunizes the image.
 
-5. **Log into ghcr**
+1. **Log into ghcr**
    - Action: `docker/login-action`
    - Description: Logs into GitHub Container Registry (ghcr.io) using the GitHub token if the Copa Action was successful.
 
-6. **Tag Image for GHCR**
-   - Description: Tags the immunized Docker image for GitHub Container Registry (GHCR) using the patched image from the Copa Action.
+2. **Tag Image for GHCR**
+   - Description: Tags the immunized Docker image for GitHub Container Registry (*GHCR*) using the patched image from the Copa Action.
 
-7. **Docker Push Patched Image**
+3. **Docker Push Patched Image**
    - Description: Pushes the tagged immunized Docker image to GitHub Container Registry (GHCR) if the login was successful.
 
 The pateched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
