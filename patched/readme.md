@@ -1,1 +1,1 @@
-This repo contains the patched images.  
+This folder contains the patched images.  
