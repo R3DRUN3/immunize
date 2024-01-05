@@ -60,7 +60,7 @@ Login Succeeded
 ## Verify Patching
 
 >[!Note]
-> Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries, rather than addressing application dependencies.  
+> Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries in the relative container layer, rather than addressing application dependencies.  
 
 To assess the effectiveness of patching, you may conduct a scan using [Trivy](https://github.com/aquasecurity/trivy) initially on one of the original images:  
 ```console
@@ -83,7 +83,7 @@ Output for OS CVEs:
 Total: 18 (UNKNOWN: 0, LOW: 11, MEDIUM: 7, HIGH: 0, CRITICAL: 0)
 ```  
 
-As you can see the latest has way more CVEs than the former!  
+As you can see the latest has way less CVEs than the former!  
 
 
 
