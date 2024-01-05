@@ -60,7 +60,7 @@ Login Succeeded
 >[!Note]
 > Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries, rather than addressing application dependencies.  
 
-To assess the effectiveness of patching, you may conduct a scan using Trivy initially on this image:  
+To assess the effectiveness of patching, you may conduct a scan using [Trivy](https://github.com/aquasecurity/trivy) initially on this image:  
 ```console
 trivy image docker.io/openpolicyagent/opa:0.46.0
 ```  
