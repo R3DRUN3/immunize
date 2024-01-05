@@ -45,9 +45,10 @@ Following are the steps in the pipeline:
 
 The pateched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
 
-In order to pull them you need to authenticate with Github container registry, you can follow the official guide [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic).  
 
-Basically you need to set an nev var with the github token and then execute a docker login:  
+To perform image pulls, authentication is not required; however, GitHub may prompt for a token if the API call limit is exceeded.  
+In such instances, please refer to the instructions provided [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic) to configure an access token.  
+Subsequently, proceed to log in as follows:
 
 ```console
 export CR_PAT=YOUR_TOKEN \
