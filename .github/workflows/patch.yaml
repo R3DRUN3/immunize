@@ -56,18 +56,19 @@ jobs:
         #   run: |
         #     docker push ${{ steps.copa.outputs.patched-image }}
 
+        - name: Convert Repository Name to Lowercase
+          id: lowercase
+          run: echo "::set-output name=name::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
+
         - name: Login to GitHub Container Registry
           if: steps.copa.conclusion == 'success'
           id: login
           run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-        - name: Docker Tag Patched Image
-          if: steps.login.conclusion == 'success'
-          id: tag
-          run: echo "::set-output name=tagged-image::ghcr.io/$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')/$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]'):${{ steps.copa.outputs.patched-tag }}"
 
-        - name: Docker Push Patched Image to GitHub Container Registry
+        - name: Docker Push Patched Image
           if: steps.login.conclusion == 'success'
-          run: docker push ${{ steps.tag.outputs.tagged-image }}
+          run: |
+            docker push ${{ steps.copa.outputs.patched-image }}
 
 
