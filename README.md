@@ -60,7 +60,7 @@ Login Succeeded
 >[!Note]
 > Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries, rather than addressing application dependencies.  
 
-To assess the effectiveness of patching, you may conduct a scan using [Trivy](https://github.com/aquasecurity/trivy) initially on this image:  
+To assess the effectiveness of patching, you may conduct a scan using [Trivy](https://github.com/aquasecurity/trivy) initially on one of the original images:  
 ```console
 trivy image docker.io/openpolicyagent/opa:0.46.0
 ```  
@@ -70,7 +70,7 @@ Output for OS CVEs:
 Total: 41 (UNKNOWN: 0, LOW: 11, MEDIUM: 21, HIGH: 9, CRITICAL: 0)
 ```  
 
-And then on the immunized version of that image:  
+And then on the immunized version of that same image:  
 ```console
 docker pull ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:immunized \
 && trivy image ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:immunized
