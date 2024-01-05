@@ -50,6 +50,7 @@ jobs:
           patched_image="docker.io/r3drun3/$(basename $image)-immunized"
           PATCHED_IMAGES="$PATCHED_IMAGES $patched_image"
         done
+        echo $PATCHED_IMAGES
         echo "patched_images=$PATCHED_IMAGES" >> $GITHUB_ENV
 
     - name: Login to Docker Hub
