@@ -43,19 +43,6 @@ jobs:
             # optional, default is latest
             copa-version: '0.3.0'
 
-        # - name: Login to Docker Hub
-        #   if: steps.copa.conclusion == 'success'
-        #   id: login
-        #   uses: docker/login-action@b4bedf8053341df3b5a9f9e0f2cf4e79e27360c6
-        #   with:
-        #     username: 'user'
-        #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-        # - name: Docker Push Patched Image
-        #   if: steps.login.conclusion == 'success'
-        #   run: |
-        #     docker push ${{ steps.copa.outputs.patched-image }}
-
         - name: Convert Repository Name to Lowercase
           id: lowercase
           run: echo "::set-output name=name::$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')"
@@ -71,6 +58,10 @@ jobs:
         - name: Docker Push Patched Image
           if: steps.login.conclusion == 'success'
           run: |
-            docker push ${{ steps.copa.outputs.patched-image }}
+            original_image=${{ matrix.images }}
+            patched_image=$(echo $original_image | sed 's/docker.io\/library\//docker.io\/r3drun3\//')-patched
+            docker tag ${{ steps.copa.outputs.patched-image }} $patched_image
+            docker push $patched_image
+
 
 
