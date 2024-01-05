@@ -56,9 +56,13 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
 
+        - name: Tag Image for GHCR
+          if: steps.login.conclusion == 'success'
+          run: |
+            docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
 
         - name: Docker Push Patched Image
           if: steps.login.conclusion == 'success'
           run: |
-            docker push ghcr.io/r3drun3/${{ steps.copa.outputs.patched-image }}
+            docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
