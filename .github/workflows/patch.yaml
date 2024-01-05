@@ -43,29 +43,14 @@ jobs:
             # optional, default is latest
             copa-version: '0.3.0'
 
-        - name: Modify Patched Image Names
-          id: modify_images
-          run: |
-            PATCHED_IMAGES=""
-            for image in ${{ matrix.images }}; do
-              # Modify image names based on your requirements
-              patched_image="r3drun3/$(basename $image)-immunized"
-              PATCHED_IMAGES="$PATCHED_IMAGES $patched_image"
-            done
-            echo $PATCHED_IMAGES
-            echo "patched_images=$PATCHED_IMAGES" >> $GITHUB_ENV
-
-        - name: Login to Docker Hub
-          if: steps.copa.conclusion == 'success'
-          id: login
-          uses: docker/login-action@b4bedf8053341df3b5a9f9e0f2cf4e79e27360c6
+        - name: Log into ghcr
+          uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
           with:
-            username: r3drun3
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Docker Push Patched Images
+        - name: Docker Push Patched Image
           if: steps.login.conclusion == 'success'
           run: |
-            for patched_image in ${{ steps.modify_images.outputs.patched_images }}; do
-              docker push $patched_image
-            done
+            docker push ${{ steps.copa.outputs.patched-image }}
