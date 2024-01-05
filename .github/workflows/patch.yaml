@@ -60,10 +60,12 @@ jobs:
           if: steps.copa.conclusion == 'success'
           run: |
             original_image_name=$(echo "${{ matrix.images }}" | sed 's/\//_/g' | sed 's/:/_/')
-            docker save -o "${GITHUB_WORKSPACE}/${original_image_name}_patched.tar" ${{ steps.copa.outputs.patched-image }}
-            ls -l ${GITHUB_WORKSPACE}/patched
-            mv "${GITHUB_WORKSPACE}/${original_image_name}_patched.tar" ${GITHUB_WORKSPACE}/patched/
-            ls -l ${GITHUB_WORKSPACE}/patched
+            mkdir -p "${GITHUB_WORKSPACE}/patched"
+            docker save -o "${GITHUB_WORKSPACE}/patched/${original_image_name}_patched.tar" ${{ steps.copa.outputs.patched-image }}
+            ls -l "${GITHUB_WORKSPACE}/patched"
+            mv "${GITHUB_WORKSPACE}/patched/${original_image_name}_patched.tar" "${GITHUB_WORKSPACE}/patched/"
+            ls -l "${GITHUB_WORKSPACE}/patched"
+
 
 
 
