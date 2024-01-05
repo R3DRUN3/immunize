@@ -57,6 +57,8 @@ export CR_PAT=YOUR_TOKEN \
 Login Succeeded
 ```   
 
+## Verify Patching
+
 >[!Note]
 > Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries, rather than addressing application dependencies.  
 
