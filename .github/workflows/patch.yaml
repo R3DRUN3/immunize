@@ -8,7 +8,7 @@ jobs:
           fail-fast: false
           matrix:
             # provide relevant list of images to scan on each run
-            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'docker.io/library/hello-world:latest']
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
         steps:
         - name: Set up Docker Buildx
@@ -49,7 +49,7 @@ jobs:
             PATCHED_IMAGES=""
             for image in ${{ matrix.images }}; do
               # Modify image names based on your requirements
-              patched_image="docker.io/r3drun3/$(basename $image)-immunized"
+              patched_image="r3drun3/$(basename $image)-immunized"
               PATCHED_IMAGES="$PATCHED_IMAGES $patched_image"
             done
             echo $PATCHED_IMAGES
