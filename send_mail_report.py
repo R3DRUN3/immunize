@@ -1,5 +1,3 @@
-# SEND MAIL REPORT WITH PATCHED IMAGES
-
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -19,7 +17,7 @@ print("Patched images:", patched_images)
 
 # Prepare the HTML content
 subject = 'IMMUNIZE: Patched Image Report'
-html_body = '<h2>Patched Images 💉</h2><ul>'
+html_body = '<h2>Patched Images:</h2><ul>'
 for image in patched_images:
     encoded_image_name = html.escape(image)
     github_link = f'https://github.com/r3drun3/pkgs/container/immunize/{encoded_image_name}'
@@ -44,6 +42,6 @@ message.attach(MIMEText(html_body, 'html'))
 with smtplib.SMTP('smtp.gmail.com', 587) as server:
     server.starttls()
     server.login(email_address, email_password)
-    server.send_message(message, subtype='html')
+    server.sendmail(email_address, recipients, message.as_string())
 
 print('Email sent successfully!')
