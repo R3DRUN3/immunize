@@ -87,11 +87,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Download Patched Image File
-        uses: actions/download-artifact@v2
-        with:
-          name: patched-image
-          path: ${{ github.workspace }}
 
       - name: Set PATCHED_IMAGES
         id: set_patched_images
