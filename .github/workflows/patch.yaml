@@ -74,20 +74,42 @@ jobs:
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
-        - name: Check GitHub Workspace Contents
-          run: |
-            ls -R $GITHUB_WORKSPACE
-          shell: bash
+        # - name: Check GitHub Workspace Contents
+        #   run: |
+        #     ls -R $GITHUB_WORKSPACE
+        #   shell: bash
 
-        - name: Send Mail Report
-          if: steps.login.conclusion == 'success'
-          run: |
-            PATCHED_IMAGES=$(echo "${{ steps.copa.outputs.patched-image }}" | tr '\n' ',' | sed 's/,$//')
-            echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
-            python $GITHUB_WORKSPACE/send_mail_report.py
-          env:
-            EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
-            EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-            EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        # - name: Send Mail Report
+        #   if: steps.login.conclusion == 'success'
+        #   run: |
+        #     PATCHED_IMAGES=${{ steps.copa.outputs.patched-image }}
+        #     echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
+        #     python $GITHUB_WORKSPACE/send_mail_report.py
+        #   env:
+        #     EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+        #     EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+        #     EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 
+    send-mail-report:
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+          - name: Checkout Repository
+            uses: actions/checkout@v2
+
+          - name: Set PATCHED_IMAGES
+            id: set_patched_images
+            run: |
+              PATCHED_IMAGES=${{ steps.copa.outputs.patched-image }}
+              echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
+            shell: bash
+
+          - name: Send Mail Report
+            run: |
+              python $GITHUB_WORKSPACE/send_mail_report.py
+            env:
+              EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+              EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+              EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+              PATCHED_IMAGES: ${{ needs.test.outputs.PATCHED_IMAGES }
