@@ -18,7 +18,7 @@ jobs:
 
         outputs:
           # Expose the 'images' array as an output
-          images: ${{ matrix.images }}
+          images: ${{ join(needs.images.outputs.images, ',') }}
 
         steps:
 
