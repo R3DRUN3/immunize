@@ -65,6 +65,19 @@ jobs:
 
 
         - name: Docker Push Patched Image
+          id: push
           if: steps.login.conclusion == 'success'
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+
+        - name: Send Mail Report
+          if: steps.push.conclusion == 'success'
+          run: |
+            PATCHED_IMAGES=$(echo "${{ steps.copa.outputs.patched-image }}" | tr '\n' ',' | sed 's/,$//')
+            echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
+            python send_mail_report.py
+          env:
+            EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+            EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+            EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+
