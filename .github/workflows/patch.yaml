@@ -85,13 +85,6 @@ jobs:
           - name: Checkout Repository
             uses: actions/checkout@v2
 
-          - name: Set PATCHED_IMAGES
-            id: set_patched_images
-            run: |
-              PATCHED_IMAGES=${{ needs.immunize.outputs.patched }}
-              echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
-            shell: bash
-
           - name: Send Mail Report
             run: |
               python $GITHUB_WORKSPACE/send_mail_report.py
@@ -99,4 +92,4 @@ jobs:
               EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
               EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
               EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-              PATCHED_IMAGES: ${{ needs.test.outputs.PATCHED_IMAGES }}
+              PATCHED_IMAGES: ${{ needs.immunize.outputs.patched }}
