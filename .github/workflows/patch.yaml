@@ -7,97 +7,94 @@ on:
       - '!README.md'
 
 jobs:
-  immunize:
-    runs-on: ubuntu-latest
+    test:
+        runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
-
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
-
-      - name: Generate Trivy Report
-        uses: aquasecurity/trivy-action@69cbbc0cbbf6a2b0bab8dcf0e9f2d7ead08e87e4
-        with:
-          scan-type: 'image'
-          format: 'json'
-          output: 'report.json'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          image-ref: ${{ matrix.images }}
-
-      - name: Check Vuln Count
-        id: vuln_count
-        run: |
-          report_file="report.json"
-          vuln_count=$(jq '.Results | length' "$report_file")
-          echo "vuln_count=$vuln_count" >> $GITHUB_OUTPUT
-
-      - name: Copa Action
-        if: steps.vuln_count.outputs.vuln_count != '0'
-        id: copa
-        uses: project-copacetic/copa-action@v1.0.0
-        with:
-          image: ${{ matrix.images }}
-          image-report: 'report.json'
-          patched-tag: 'immunized'
-          buildkit-version: 'v0.11.6'
-          # optional, default is latest
-          copa-version: '0.3.0'
-
-      - name: Log into ghcr
-        if: steps.copa.conclusion == 'success'
-        id: login
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Tag Image for GHCR
-        if: steps.login.conclusion == 'success'
-        run: |
-          docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
-
-      - name: Docker Push Patched Image
-        id: push
-        if: steps.login.conclusion == 'success'
-        run: |
-          docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
-
-      - name: Create Patched Image File
-        if: steps.login.conclusion == 'success'
-        run: echo ${{ steps.copa.outputs.patched-image }} >> patched-images.txt
-        shell: bash
+        strategy:
+          fail-fast: false
+          matrix:
+            # provide relevant list of images to scan on each run
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
 
-  send-mail-report:
-    runs-on: ubuntu-latest
-    needs: immunize
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+        steps:
+
+        - name: Checkout Repository
+          uses: actions/checkout@v2
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
+
+        - name: Generate Trivy Report
+          uses: aquasecurity/trivy-action@69cbbc0cbbf6a2b0bab8dcf0e9f2d7ead08e87e4
+          with:
+            scan-type: 'image'
+            format: 'json'
+            output: 'report.json'
+            ignore-unfixed: true
+            vuln-type: 'os'
+            image-ref: ${{ matrix.images }}
+
+        - name: Check Vuln Count
+          id: vuln_count
+          run: |
+            report_file="report.json"
+            vuln_count=$(jq '.Results | length' "$report_file")
+            echo "vuln_count=$vuln_count" >> $GITHUB_OUTPUT
+
+        - name: Copa Action
+          if: steps.vuln_count.outputs.vuln_count != '0'
+          id: copa
+          uses: project-copacetic/copa-action@v1.0.0
+          with:
+            image: ${{ matrix.images }}
+            image-report: 'report.json'
+            patched-tag: 'immunized'
+            buildkit-version: 'v0.11.6'
+            # optional, default is latest
+            copa-version: '0.3.0'
+
+        - name: Log into ghcr
+          if: steps.copa.conclusion == 'success'
+          id: login
+          uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Tag Image for GHCR
+          if: steps.login.conclusion == 'success'
+          run: |
+            docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
 
-      - name: Set PATCHED_IMAGES
-        id: set_patched_images
-        run: |
-          PATCHED_IMAGES=$(cat ${{ github.workspace }}/patched-images.txt)
-          echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
-        shell: bash
+        - name: Docker Push Patched Image
+          id: push
+          if: steps.login.conclusion == 'success'
+          run: |
+            docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
-      - name: Send Mail Report
-        run: |
-          python $GITHUB_WORKSPACE/send_mail_report.py
-        env:
-          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          PATCHED_IMAGES: ${{ env.PATCHED_IMAGES }}
+
+    send-mail-report:
+        runs-on: ubuntu-latest
+        needs: test
+        steps:
+          - name: Checkout Repository
+            uses: actions/checkout@v2
+
+          - name: Set PATCHED_IMAGES
+            id: set_patched_images
+            run: |
+              PATCHED_IMAGES=${{ steps.copa.outputs.patched-image }}
+              echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
+            shell: bash
+
+          - name: Send Mail Report
+            run: |
+              python $GITHUB_WORKSPACE/send_mail_report.py
+            env:
+              EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+              EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+              EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+              PATCHED_IMAGES: ${{ needs.test.outputs.PATCHED_IMAGES }}
