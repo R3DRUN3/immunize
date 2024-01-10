@@ -13,7 +13,7 @@ jobs:
           fail-fast: false
           matrix:
             # provide relevant list of images to scan on each run
-            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'docker.io/python:3.9.18-slim-bullseye']
 
         # outputs:
         #   # Expose the 'images' array as an output
