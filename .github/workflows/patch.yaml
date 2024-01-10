@@ -93,39 +93,19 @@ jobs:
         #     name: outputs
         #     path: outputs/*.txt
 
-    # send-mail-report:
-    #   runs-on: ubuntu-latest
-    #   needs: immunize
-    #   steps:
-    #     - name: Checkout Repository
-    #       uses: actions/checkout@v2
+    send-mail-report:
+      runs-on: ubuntu-latest
+      needs: immunize
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v2
 
-    #     - uses: actions/checkout@v3
-    #     - name: Load outputs
-    #       uses: actions/download-artifact@v3
-    #       with:
-    #         name: outputs
-    #         path: outputs
-
-    #     - run: |
-    #         ls outputs
-    #         cat outputs/*.txt
-
-    #     # Access the 'images' array from the 'immunize' job outputs
-    #     - name: Set PATCHED_IMAGES
-    #       id: set_patched_images
-    #       run: |
-    #         IMAGES="${{ needs.immunize.outputs.images }}"
-    #         echo "PATCHED_IMAGES=${IMAGES}" >> $GITHUB_ENV
-    #         echo "Patched images: $IMAGES" # Print for debugging
-    #       shell: bash
-
-    #     - name: Send Mail Report
-    #       run: |
-    #         python $GITHUB_WORKSPACE/send_mail_report.py
-    #       env:
-    #         EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
-    #         EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-    #         EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        - name: Send Mail Report
+          run: |
+            python $GITHUB_WORKSPACE/send_mail_report.py
+          env:
+            EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+            EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+            EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
     #         PATCHED_IMAGES: ${{ env.PATCHED_IMAGES }}
 

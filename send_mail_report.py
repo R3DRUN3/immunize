@@ -4,12 +4,17 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
+import yaml
 
-# Get patched image information from GitHub Actions context
-patched_images_str = os.environ.get('PATCHED_IMAGES', '')
-print("Pathed images string: ", patched_images_str)
-patched_images = patched_images_str.split(',')
-print("Pathed images: ", patched_images)
+# Get the path to the YAML file
+yaml_file_path = os.path.join(os.path.dirname(__file__), '.github/workflows/patch.yaml')
+
+# Read the YAML file to get the patched image list
+with open(yaml_file_path, 'r') as yaml_file:
+    yaml_content = yaml.load(yaml_file, Loader=yaml.FullLoader)
+    patched_images = yaml_content.get('jobs', {}).get('immunize', {}).get('strategy', {}).get('matrix', {}).get('images', [])
+
+print("Patched images:", patched_images)
 
 # Prepare the email content
 subject = 'IMMUNIZE: Patched Image Report'
