@@ -15,8 +15,6 @@ jobs:
       matrix:
         images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
-    outputs:
-      patched: ${{ steps.copa.outputs.patched-image }}
 
     steps:
       - name: Checkout Repository
@@ -76,7 +74,7 @@ jobs:
 
       - name: Create Patched Image File
         if: steps.login.conclusion == 'success'
-        run: echo ${{ steps.copa.outputs.patched-image }} >> patched-image.txt
+        run: echo ${{ steps.copa.outputs.patched-image }} >> patched-images.txt
         shell: bash
 
 
@@ -91,7 +89,7 @@ jobs:
       - name: Set PATCHED_IMAGES
         id: set_patched_images
         run: |
-          PATCHED_IMAGES=$(cat ${{ github.workspace }}/patched-image.txt)
+          PATCHED_IMAGES=$(cat ${{ github.workspace }}/patched-images.txt)
           echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
         shell: bash
 
