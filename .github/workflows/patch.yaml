@@ -15,8 +15,8 @@ jobs:
       matrix:
         images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
-    # outputs:
-    #   patched: ${{ steps.copa.outputs.patched-image }}
+    outputs:
+      patched: ${{ steps.copa.outputs.patched-image }}
 
     steps:
       - name: Checkout Repository
@@ -74,12 +74,10 @@ jobs:
         run: |
           docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
-      - name: Upload Patched Image Artifact
+      - name: Create Patched Image File
         if: steps.login.conclusion == 'success'
-        uses: actions/upload-artifact@v2
-        with:
-          name: patched-image
-          path: ${{ steps.copa.outputs.patched-image }}
+        run: echo ${{ steps.copa.outputs.patched-image }} >> patched-image.txt
+        shell: bash
 
 
   send-mail-report:
@@ -89,16 +87,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Download Patched Image Artifact
+      - name: Download Patched Image File
         uses: actions/download-artifact@v2
         with:
           name: patched-image
-          path: ${{ github.workspace }}/patched-image
+          path: ${{ github.workspace }}
 
       - name: Set PATCHED_IMAGES
         id: set_patched_images
         run: |
-          PATCHED_IMAGES=$(cat ${{ github.workspace }}/patched-image)
+          PATCHED_IMAGES=$(cat ${{ github.workspace }}/patched-image.txt)
           echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
         shell: bash
 
