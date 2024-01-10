@@ -13,16 +13,16 @@ jobs:
           fail-fast: false
           matrix:
             # provide relevant list of images to scan on each run
-            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'python:3.9.18-slim-bullseye']
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
-        outputs:
-          # Expose the 'images' array as an output
-          images: ${{ matrix.images }}
+        # outputs:
+        #   # Expose the 'images' array as an output
+        #   images: ${{ matrix.images }}
 
         steps:
 
-        - name: Checkout Repository
-          uses: actions/checkout@v2
+        # - name: Checkout Repository
+        #   uses: actions/checkout@v2
 
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
