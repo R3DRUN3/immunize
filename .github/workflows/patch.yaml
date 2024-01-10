@@ -112,4 +112,4 @@ jobs:
               EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
               EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
               EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-              PATCHED_IMAGES: ${{ needs.test.outputs.PATCHED_IMAGES }
+              PATCHED_IMAGES: ${{ needs.test.outputs.PATCHED_IMAGES }}
