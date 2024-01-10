@@ -88,7 +88,7 @@ jobs:
           - name: Set PATCHED_IMAGES
             id: set_patched_images
             run: |
-              PATCHED_IMAGES=${{ needs.immunize.outputs.pateched }}
+              PATCHED_IMAGES=${{ needs.immunize.outputs.patched }}
               echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
             shell: bash
 
