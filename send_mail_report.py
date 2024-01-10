@@ -12,7 +12,7 @@ patched_images = patched_images_str.split(',')
 print("Pathed images: ", patched_images)
 
 # Prepare the email content
-subject = 'Patched Image Report'
+subject = 'IMMUNIZE: Patched Image Report'
 body = f'Patched Images:\n\n{", ".join(patched_images)}'
 
 # Get email and password from GitHub secrets
