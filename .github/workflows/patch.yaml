@@ -46,7 +46,9 @@ jobs:
 
         - name: Set Tag
           id: set_tag
-          run: echo "::set-env name=PATCHED_TAG::$(echo "${{ matrix.images }}" | cut -d':' -f2 | cut -d'/' -f2 | sed 's/[^0-9.]*//g')-immunized"
+          run: |
+            TAG=$(echo "${{ matrix.images }}" | cut -d':' -f2 | cut -d'/' -f2 | sed 's/[^0-9.]*//g')
+            echo "PATCHED_TAG=$TAG-immunized" >> $GITHUB_ENV
 
         - name: Copa Action
           if: steps.vuln_count.outputs.vuln_count != '0'
