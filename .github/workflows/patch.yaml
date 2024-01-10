@@ -16,7 +16,6 @@ jobs:
             # provide relevant list of images to scan on each run
             images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
-
         steps:
 
         - name: Checkout Repository
@@ -74,6 +73,22 @@ jobs:
           if: steps.login.conclusion == 'success'
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+
+        # - name: Check GitHub Workspace Contents
+        #   run: |
+        #     ls -R $GITHUB_WORKSPACE
+        #   shell: bash
+
+        # - name: Send Mail Report
+        #   if: steps.login.conclusion == 'success'
+        #   run: |
+        #     PATCHED_IMAGES=${{ steps.copa.outputs.patched-image }}
+        #     echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
+        #     python $GITHUB_WORKSPACE/send_mail_report.py
+        #   env:
+        #     EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+        #     EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+        #     EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 
     send-mail-report:
