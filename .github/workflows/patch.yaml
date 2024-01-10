@@ -18,7 +18,7 @@ jobs:
 
         outputs:
           # Expose the 'images' array as an output
-          images: ${{ join(needs.images.outputs.images, ',') }}
+          images: ${{ matrix.images }}
 
         steps:
 
@@ -89,8 +89,9 @@ jobs:
         - name: Set PATCHED_IMAGES
           id: set_patched_images
           run: |
-            IMAGES="${{ needs.immunize.outputs.images }}"
+            IMAGES="${{ join(needs.immunize.outputs.images, ',') }}"
             echo "PATCHED_IMAGES=${IMAGES}" >> $GITHUB_ENV
+            echo "Patched images: $IMAGES" # Print for debugging
           shell: bash
 
         - name: Send Mail Report
@@ -101,3 +102,4 @@ jobs:
             EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
             EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
             PATCHED_IMAGES: ${{ env.PATCHED_IMAGES }}
+
