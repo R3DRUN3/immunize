@@ -9,7 +9,6 @@ on:
 jobs:
     immunize:
         runs-on: ubuntu-latest
-
         strategy:
           fail-fast: false
           matrix:
@@ -89,7 +88,7 @@ jobs:
         - name: Set PATCHED_IMAGES
           id: set_patched_images
           run: |
-            IMAGES="${{ join(needs.immunize.outputs.images, ',') }}"
+            IMAGES="${{ needs.immunize.outputs.images }}"
             echo "PATCHED_IMAGES=${IMAGES}" >> $GITHUB_ENV
             echo "Patched images: $IMAGES" # Print for debugging
           shell: bash
