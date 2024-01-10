@@ -75,7 +75,7 @@ jobs:
           run: |
             PATCHED_IMAGES=$(echo "${{ steps.copa.outputs.patched-image }}" | tr '\n' ',' | sed 's/,$//')
             echo "PATCHED_IMAGES=${PATCHED_IMAGES}" >> $GITHUB_ENV
-            python python $GITHUB_WORKSPACE/send_mail_report.py
+            python $GITHUB_WORKSPACE/send_mail_report.py
           env:
             EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
             EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
