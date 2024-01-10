@@ -3,7 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 import yaml
-import html
+#import html
+from datetime import datetime
 
 # Get the path to the YAML file
 yaml_file_path = os.path.join(os.path.dirname(__file__), '.github/workflows/patch.yaml')
@@ -14,15 +15,17 @@ with open(yaml_file_path, 'r') as yaml_file:
     patched_images = yaml_content.get('jobs', {}).get('immunize', {}).get('strategy', {}).get('matrix', {}).get('images', [])
 
 print("Patched images:", patched_images)
-
+# Get the current timestamp
+current_timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 # Prepare the HTML content
 subject = 'IMMUNIZE: Patched Image Report'
-html_body = '<h2>Patched Images:</h2><ul>'
+html_body = '<h2>Patched Images 💉- {}</h2><ul>'.format(current_timestamp)
 for image in patched_images:
-    encoded_image_name = html.escape(image)
-    github_link = f'https://github.com/r3drun3/pkgs/container/immunize/{encoded_image_name}'
-    html_body += f'<li><a href="{github_link}">{encoded_image_name}</a></li>'
-html_body += '</ul>'
+    # encoded_image_name = html.escape(image)
+    github_link = f'https://github.com/r3drun3/pkgs/container/immunize/{image}'
+    html_body += f'<li>{image}</li>'
+html_body += '</ul><br />'
+html_body += 'check the full catalog <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a>'
 
 # Get email and password from GitHub secrets
 email_address = os.environ.get('EMAIL_ADDRESS', '')
