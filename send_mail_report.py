@@ -7,6 +7,7 @@ import os
 
 # Get patched image information from GitHub Actions context
 patched_images_str = os.environ.get('PATCHED_IMAGES', '')
+print("Pathed images string: ", patched_images_str)
 patched_images = patched_images_str.split(',')
 print("Pathed images: ", patched_images)
 
