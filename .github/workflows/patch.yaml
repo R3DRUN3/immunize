@@ -13,17 +13,9 @@ jobs:
           fail-fast: false
           matrix:
             # provide relevant list of images to scan on each run
-            images: ['docker.io/library/nginx:1.21.6', 'docker.io/library/nginx:1.25.3', 'docker.io/openpolicyagent/opa:0.46.0', 'docker.io/python:3.9.18']
-
-        # outputs:
-        #   # Expose the 'images' array as an output
-        #   images: ${{ matrix.images }}
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/library/nginx:1.25.3', 'docker.io/openpolicyagent/opa:0.46.0']
 
         steps:
-
-        # - name: Checkout Repository
-        #   uses: actions/checkout@v2
-
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
 
@@ -83,16 +75,6 @@ jobs:
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
-        # - name: Write Artifacts
-        #   run: |
-        #     echo ${{ matrix.images }} >> outputs/${{ matrix.images }}.txt
-
-        # - name: Upload artifacts
-        #   uses: actions/upload-artifact@v3
-        #   with:
-        #     name: outputs
-        #     path: outputs/*.txt
-
     send-mail-report:
       runs-on: ubuntu-latest
       needs: immunize
@@ -107,5 +89,3 @@ jobs:
             EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
             EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
             EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-    #         PATCHED_IMAGES: ${{ env.PATCHED_IMAGES }}
-
