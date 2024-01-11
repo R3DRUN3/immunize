@@ -18,11 +18,13 @@ print("Patched images:", patched_images)
 current_timestamp = datetime.now().strftime('%Y-%m-%d')
 # Prepare the HTML content
 subject = 'IMMUNIZE: Patched Image Report'
-html_body = '<h2>Patched Images 💉 {}</h2><ul>'.format(current_timestamp)
+html_body = '<h1>Patched Images 💉 {}</h1><ul>'.format(current_timestamp)
 for image in patched_images:
     html_body += f'<li>{image}</li>'
 html_body += '</ul><br />'
 html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
+html_body += '<br /><br />'
+html_body += '<h2>Stay Safe! 💪</h2>'
 
 # Get email and password from GitHub secrets
 email_address = os.environ.get('EMAIL_ADDRESS', '')
