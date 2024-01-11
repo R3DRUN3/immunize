@@ -1,18 +1,16 @@
 name: patch
-
 on:
   push:
     paths:
       - '**/*'
       - '!README.md'
-
+      - '!images/**'
 jobs:
     immunize:
         runs-on: ubuntu-latest
         strategy:
           fail-fast: false
           matrix:
-            # provide relevant list of images to scan on each run
             images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
                     'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0']
 
@@ -53,7 +51,6 @@ jobs:
             image-report: 'report.json'
             patched-tag: ${{ env.PATCHED_TAG }}
             buildkit-version: 'v0.11.6'
-            # optional, default is latest
             copa-version: '0.3.0'
 
         - name: Log into ghcr
