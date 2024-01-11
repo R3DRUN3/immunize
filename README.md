@@ -52,13 +52,14 @@ If you dont need this job you can comment it out in the pipeline manifest.
    - Executes a Python script (`send_mail_report.py`) located in the repository, sending a report via email.  
    - Configures email recipient addresses, sender address, and password using secrets.  
 3. **Report Example**:  
+   - ![report](images/report.png)
 
-
+<br />
 
 > [!Note]
 > The pateched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
 
-
+<br />
 
 
 To perform image pulls, authentication is not required; however, GitHub may prompt for a token if the API call limit is exceeded.  
