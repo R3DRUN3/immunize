@@ -17,7 +17,7 @@ with open(yaml_file_path, 'r') as yaml_file:
 print("Patched images:", patched_images)
 current_timestamp = datetime.now().strftime('%Y-%m-%d')
 # Prepare the HTML content
-subject = 'IMMUNIZE: Patched Image Report'
+subject = 'IMMUNIZE: OCI Images Patching Report'
 html_body = '<h1>Patched Images 💉 {}</h1><ul>'.format(current_timestamp)
 for image in patched_images:
     html_body += f'<li>{image}</li>'
