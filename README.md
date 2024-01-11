@@ -7,6 +7,9 @@ Pipeline for patching vulnerable container images 📦🛡️
 ## Abstract
 The present is a repository containing a [Github action](https://github.com/features/actions) to patch vulnerable container images with [copacetic](https://github.com/project-copacetic/copacetic).  
 
+> [!Note]
+> The pateched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
+
 ## Instructions
 
 The pipeline is triggered upon a push to the repo (any branch).   
@@ -56,10 +59,6 @@ If you dont need this job you can comment it out in the pipeline manifest.
 
 <br />
 
-> [!Note]
-> The pateched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
-
-<br />
 
 
 To perform image pulls, authentication is not required; however, GitHub may prompt for a token if the API call limit is exceeded.  
