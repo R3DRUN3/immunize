@@ -9,7 +9,7 @@ The present is a repository containing a [Github action](https://github.com/feat
 
 ## Instructions
 
-The pipeline is triggered upon a push to the *main* branch.  
+The pipeline is triggered upon a push to the repo (any branch).   
 The corresponding action is configured in the `.github/workflows/patch.yaml` file.  
 Specifically, the list of container images to patch is specified within the strategy as follows:
 
@@ -43,14 +43,14 @@ This job is triggered on every push event (excluding changes to README.md) and f
 ## Send-Mail-Report Job
 ### Overview:
 
-This job is dependent on the completion of the "Immunize" job and is responsible for sending an email report.  
+This job is dependent on the completion of the `Immunize` job and is responsible for sending an email report.  
 If you dont need this job you can comment it out in the pipeline manifest.  
 ### Steps: 
 1. **Checkout Repository:** 
    - Checks out the repository to access necessary files and scripts. 
 2. **Send Mail Report:**  
    - Executes a Python script (`send_mail_report.py`) located in the repository, sending a report via email.  
-   - Configures email recipient addresses, sender address, and password using secrets.  
+   - Configures email recipient addresses, sender address, and password using github action secrets.  
 3. **Report Example**:  
    - ![report](images/report.png)
 
