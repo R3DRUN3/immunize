@@ -13,9 +13,8 @@ jobs:
           fail-fast: false
           matrix:
             # provide relevant list of images to scan on each run
-            images: ['mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18', 'docker.io/library/node:18.17.1-slim']
-            # images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
-            #         'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0']
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
+                    'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0']
 
         steps:
         - name: Set up Docker Buildx
@@ -38,19 +37,12 @@ jobs:
             vuln_count=$(jq '.Results | length' "$report_file")
             echo "vuln_count=$vuln_count" >> $GITHUB_OUTPUT
 
-        # - name: Set Tag
-        #   id: set_tag
-        #   run: |
-        #     TAG=$(echo "${{ matrix.images }}" | cut -d':' -f2 | cut -d'/' -f2 | sed 's/[^0-9.]*//g')
-        #     echo "PATCHED_TAG=$TAG-immunized" >> $GITHUB_ENV
-
         - name: Set Tag
           id: set_tag
           run: |
             TAG=$(echo "${{ matrix.images }}" | grep -oP '(?<=:).*' | grep -oP '^[^/]+')
             IMMUNIZED_TAG="${TAG}-immunized"
             echo "PATCHED_TAG=${IMMUNIZED_TAG}" >> $GITHUB_ENV
-
 
         - name: Copa Action
           if: steps.vuln_count.outputs.vuln_count != '0'
@@ -77,7 +69,6 @@ jobs:
           if: steps.login.conclusion == 'success'
           run: |
             docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
-
 
         - name: Docker Push Patched Image
           id: push
