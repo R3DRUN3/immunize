@@ -72,11 +72,11 @@ jobs:
           run: |
             docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
-        # - name: Docker Push Patched Image
-        #   id: push
-        #   if: steps.login.conclusion == 'success'
-        #   run: |
-        #     docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+        - name: Docker Push Patched Image
+          id: push
+          if: steps.login.conclusion == 'success'
+          run: |
+            docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
         - name: Sign image with Cosign
           run: |
