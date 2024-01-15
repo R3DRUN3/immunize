@@ -81,6 +81,9 @@ jobs:
         - uses: anchore/sbom-action@v0
           with:
             image: ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+        - uses: anchore/sbom-action/publish-sbom@v0
+          with:
+            sbom-artifact-match: ".*\\.spdx$"
 
         - name: Sign image with Cosign
           run: |
