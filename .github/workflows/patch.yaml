@@ -72,19 +72,18 @@ jobs:
           run: |
             docker tag ${{ steps.copa.outputs.patched-image }} ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
-        - name: Docker Push Patched Image
-          id: push
-          if: steps.login.conclusion == 'success'
-          run: |
-            docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+        # - name: Docker Push Patched Image
+        #   id: push
+        #   if: steps.login.conclusion == 'success'
+        #   run: |
+        #     docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
         - name: Sign image with Cosign
           run: |
-            cosign sign --yes --key env://COSIGN_PRIVATE_KEY "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}@${DIGEST}"
+            cosign sign --yes --key env://COSIGN_PRIVATE_KEY "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
           env:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-            DIGEST: ${{ steps.push.digest }}
 
     send-mail-report:
       runs-on: ubuntu-latest
