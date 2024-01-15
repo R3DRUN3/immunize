@@ -78,15 +78,9 @@ jobs:
           if: steps.login.conclusion == 'success'
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
-        
-        - uses: anchore/sbom-action@v0
-          with:
-            image: ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
-            artifact-name: sbom.spdx
 
         - name: Sign image with Cosign
           run: |
-            cosign attach attestation "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}" --attestation sbom.spdx"
             cosign sign --yes --key env://COSIGN_PRIVATE_KEY "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
           env:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
