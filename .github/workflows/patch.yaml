@@ -81,12 +81,11 @@ jobs:
         - uses: anchore/sbom-action@v0
           with:
             image: ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
-        - uses: anchore/sbom-action/publish-sbom@v0
-          with:
-            sbom-artifact-match: ".*\\.spdx$"
+            artifact-name: ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}-sbom.spdx
 
         - name: Sign image with Cosign
           run: |
+            cosign attach attestation "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}" --attestation "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}-sbom.spdx"
             cosign sign --yes --key env://COSIGN_PRIVATE_KEY "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
           env:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
