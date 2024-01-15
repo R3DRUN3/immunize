@@ -77,6 +77,10 @@ jobs:
           if: steps.login.conclusion == 'success'
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+        
+        - uses: anchore/sbom-action@v0
+          with:
+            image: ghcr.io/example/image_name:tag
 
         - name: Sign image with Cosign
           run: |
