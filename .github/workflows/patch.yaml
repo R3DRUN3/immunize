@@ -76,10 +76,6 @@ jobs:
           id: push
           if: steps.login.conclusion == 'success'
           run: |
-            image_name="${{ steps.copa.outputs.patched-image }}"
-            sbom_file="${image_name}-SBOM.json"
-            docker sbom --format spdx-json --output "${sbom_file}" "${image_name}"
-            docker push ghcr.io/r3drun3/immunize/${ sbom_file }
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
 
         - name: Sign image with Cosign
