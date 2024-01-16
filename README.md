@@ -110,7 +110,7 @@ As you can see the latest has way less CVEs than the former!
 
 ## Verify Image Signatures and Attestations
 All the patched OCI images produced by the pipeline are signed with [cosign](https://github.com/sigstore/cosign).  
-In order to verify the signature, adapt the following command to the desired image:  
+In order to verify the signature, adapt the following command for the desired image:  
 ```console
 cosign verify --key cosign/cosign.pub ghcr.io/r3drun3/immunize/docker.io/library/node:18.17.1-slim-immunized
 ```   
