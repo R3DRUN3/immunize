@@ -140,22 +140,36 @@ export IMAGE=ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immun
 cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE
 ```   
 
-The above command verifies & returns the uploaded artifact data in base64 format.  
+The above command verifies and returns the uploaded artifact data in base64 format.  
 We can decode it to query the artifact (in this case, the SBOM file):  
 ```console
-cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -d | jq -r .predicate .
+cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -D | jq .
 ```   
+The SPDX sbom is the `predicate` property in the previous command output:  
+
 
 Output Sample:  
 ```json
-{"spdxVersion":"SPDX-2.3","dataLicense":"CC0-1.0","SPDXID":"SPDXRef-DOCUMENT","name":"ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa","documentNamespace":"https://anchore.com/syft/image/ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa-d1859513-f96a-4ef8-ba86-335e5f788804","creationInfo":{"licenseListVersion":"3.22","creators":["Organization: Anchore, Inc","Tool: syft-0.100.0"],"created":"2024-01-16T11:34:43Z"},"packages":[{"name":"./build/replacements/github.com/golang/glog","SPDXID":"SPDXRef-Package-go-module-.-build-replacements-github.com-golang-glog-d47d5504972e1fd8","versionInfo":"(devel)","supplier":"NOASSERTION","downloadLocation":"NOASSERTION","filesAnalyzed":false,"sourceInfo":"acquired package info from go module information: /opa","licenseConcluded":"NOASSERTION","licenseDeclared":"NOASSERTION","copyrightText":"NOASSERTION","externalRefs":[{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:build:replacements\\/github.com\\/golang\\/glog:\\(devel\\):*:*:*:*:*:*:*"},{"referenceCategory":"PACKAGE-MANAGER","referenceType":"purl","referenceLocator":"pkg:golang/./build/replacements/github.com/golang/glog@(devel)"}]},{"name":"base-files","SPDXID":"SPDXRef-Package-deb-base-files-e23e73c815fe7e80","versionInfo":"11.1+deb11u5","supplier":"Person: Santiago Vila \u003csanvila@debian.org\u003e","originator":"Person: Santiago Vila \u003csanvila@debian.org\u003e","downloadLocation":"NOASSERTION","filesAnalyzed":false,"sourceInfo":"acquired package info from DPKG DB: /usr/share/doc/base-files/copyright, /var/lib/dpkg/status.d/base","licenseConcluded":"NOASSERTION","licenseDeclared":"LicenseRef-GPL","copyrightText":"NOASSERTION","externalRefs":[{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:base-files:base-files:11.1\\+deb11u5:*:*:*:*:*:*:*"},{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:base-files:base_files:11.1\\+deb11u5:*:*:*:*:*:*:*"},{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:base_files:base-files:11.1\\+deb11u5:*:*:*:*:*:*:*"},{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:base_files:base_files:11.1\\+deb11u5:*:*:*:*:*:*:*"},{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:base:base-files:11.1\\+deb11u5:*:*:*:*:*:*:*"},{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:base:base_files:11.1\\+deb11u5:*:*:*:*:*:*:*"},{"referenceCategory":"PACKAGE-MANAGER","referenceType":"purl","referenceLocator":"pkg:deb/debian/base-files@11.1+deb11u5?arch=amd64\u0026distro=debian-11"}]},{"name":"github.com/OneOfOne/xxhash","SPDXID":"SPDXRef-Package-go-module-github.com-OneOfOne-xxhash-85662ba2e4afc16f","versionInfo":"v1.2.8","supplier":"NOASSERTION","downloadLocation":"NOASSERTION","filesAnalyzed":false,"sourceInfo":"acquired package info from go module information: /opa","licenseConcluded":"NOASSERTION","licenseDeclared":"NOASSERTION","copyrightText":"NOASSERTION","externalRefs":[{"referenceCategory":"SECURITY","referenceType":"cpe23Type","referenceLocator":"cpe:2.3:a:OneOfOne:xxhash:v1.2.8:*:*:*:*:*:*:*"},{"referenceCategory":"PACK...
-....
-....
-CON|TINUES
+Verification for ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The signatures were verified against the specified public key
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://spdx.dev/Document",
+  "subject": [
+    {
+      "name": "ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa",
+      "digest": {
+        "sha256": "45de0d4de2ef8590ccdb97ee817d70ba6bb3efb70aabd4abe74a3a6facff24ea"
+      }
+    }
+  ],
+  "predicate": "[SPDX-SBOM-HERE]"
+}
 ```   
 
-
-cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -D | jq .
 
 
 
