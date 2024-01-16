@@ -102,7 +102,7 @@ jobs:
               echo "Error: .spdx file not found"
               exit 1
             fi
-            cosign attest --key env://COSIGN_PRIVATE_KEY --type spdx --predicate "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
+            cosign attest --yes --key env://COSIGN_PRIVATE_KEY --type spdx --predicate "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
           env:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
