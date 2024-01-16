@@ -20,7 +20,7 @@ jobs:
         - name: Install Cosign
           uses: sigstore/cosign-installer@v3.1.1
           with:
-            cosign-release: 'v2.2.1'
+            cosign-release: 'v2.2.2'
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
 
@@ -85,6 +85,7 @@ jobs:
         - name: Produce Image SBOM
           uses: anchore/sbom-action@v0
           with:
+            format: spdx
             artifact-name: ${{ env.PATCHED_TAG_SBOM }}.spdx
 
         - name: Sign image with Cosign
@@ -98,6 +99,7 @@ jobs:
           run: |
             echo "${{ env.PATCHED_TAG_SBOM }}"
             SBOM_FILE=$(find /tmp/sbom-action-* -name "*${{ env.PATCHED_TAG_SBOM }}*.spdx" -type f)
+            echo "${SBOM_FILE}"
             if [ -z "$SBOM_FILE" ]; then
               echo "Error: .spdx file not found"
               exit 1
