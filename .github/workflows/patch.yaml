@@ -109,21 +109,10 @@ jobs:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
-        # cosign attach sbom --sbom "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
-        # - name: Attach SBOM to Image
-        #   run: |
-          # cosign attach sbom --sbom "${{ env.PATCHED_TAG_SBOM }}.spdx" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
-          # env:
-          #   PATCHED_TAG_SBOM: ${{ env.PATCHED_TAG_SBOM }}.spdx
+        - name: Attach SBOM to Image
+          run: |
+            cosign attach sbom --sbom "${{ env.PATCHED_TAG_SBOM }}.spdx" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
 
-
-        # - name: Sign SBOM with Cosign
-        #   run: |
-        #     cosign sign --yes --key env://COSIGN_PRIVATE_KEY "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
-        #   env:
-        #     COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-        #     COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-        #     PATCHED_TAG_SBOM: ${{ env.PATCHED_TAG_SBOM }}
 
 
     send-mail-report:
