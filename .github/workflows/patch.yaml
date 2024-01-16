@@ -46,7 +46,7 @@ jobs:
           run: |
             TAG=$(echo "${{ matrix.images }}" | grep -oP '(?<=:).*' | grep -oP '^[^/]+')
             IMMUNIZED_TAG="${TAG}-immunized"
-            PATCHED_TAG_SBOM=$(echo "${IMMUNIZED_TAG}" | tr '/:' '-')
+            PATCHED_TAG_SBOM=$(echo "${{matrix.images}}" | tr '/:' '-')
             echo "PATCHED_TAG=${IMMUNIZED_TAG}" >> $GITHUB_ENV
             echo "PATCHED_TAG_SBOM=${PATCHED_TAG_SBOM}" >> $GITHUB_ENV
 
@@ -93,6 +93,21 @@ jobs:
           env:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        
+        - name: Attach SBOM to Image
+          run: |
+            cosign attach sbom --sbom env://PATCHED_TAG_SBOM "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
+          env:
+            PATCHED_TAG_SBOM: ${{ env.PATCHED_TAG_SBOM }}
+
+        # - name: Sign SBOM with Cosign
+        #   run: |
+        #     cosign sign --yes --key env://COSIGN_PRIVATE_KEY "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
+        #   env:
+        #     COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        #     COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        #     PATCHED_TAG_SBOM: ${{ env.PATCHED_TAG_SBOM }}
+
 
     send-mail-report:
       runs-on: ubuntu-latest
