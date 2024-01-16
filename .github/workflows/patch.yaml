@@ -85,8 +85,7 @@ jobs:
         - name: Produce Image SBOM
           uses: anchore/sbom-action@v0
           with:
-            format: spdx
-            artifact-name: ${{ env.PATCHED_TAG_SBOM }}.spdx
+            artifact-name: ${{ env.PATCHED_TAG_SBOM }}.spdx.json
 
         - name: Sign image with Cosign
           run: |
@@ -95,10 +94,10 @@ jobs:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
-        - name: Attach SBOM to Image
+        - name: Attest the Image with SBOM
           run: |
             echo "${{ env.PATCHED_TAG_SBOM }}"
-            SBOM_FILE=$(find /tmp/sbom-action-* -name "*${{ env.PATCHED_TAG_SBOM }}*.spdx" -type f)
+            SBOM_FILE=$(find /tmp/sbom-action-* -name "*${{ env.PATCHED_TAG_SBOM }}*.spdx.json" -type f)
             echo "${SBOM_FILE}"
             if [ -z "$SBOM_FILE" ]; then
               echo "Error: .spdx file not found"
@@ -108,17 +107,6 @@ jobs:
           env:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-
-        - name: Attach SBOM to Image
-          run: |
-            echo "${{ env.PATCHED_TAG_SBOM }}"
-            SBOM_FILE=$(find /tmp/sbom-action-* -name "*${{ env.PATCHED_TAG_SBOM }}*.spdx" -type f)
-            echo "${SBOM_FILE}"
-            if [ -z "$SBOM_FILE" ]; then
-              echo "Error: .spdx file not found"
-              exit 1
-            fi
-            cosign attach sbom --sbom "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
 
 
 
@@ -136,3 +124,8 @@ jobs:
             EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
             EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
             EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+
+
+
+#export IMAGE=ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized
+#cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -d 
