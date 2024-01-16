@@ -143,7 +143,7 @@ The following checks were performed on each of these signatures:
 ]
 ```   
 
-The pipeline, for every image, produces an SBOM in [SPDX](https://spdx.github.io/spdx-spec/v2.3/) format and create an [in-toto attestation](https://docs.sigstore.dev/verifying/attestation/) for the image using that artifact as a predicate.  
+The pipeline, for every image, produces an SBOM in [SPDX](https://spdx.github.io/spdx-spec/v2.3/) format and creates an [in-toto attestation](https://docs.sigstore.dev/verifying/attestation/) for the image using that artifact as a predicate.  
 
 > [!Note]
 > You can learn the difference between SBOMs and Attestations [here](https://edu.chainguard.dev/open-source/sbom/sboms-and-attestations).
