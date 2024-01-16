@@ -83,7 +83,7 @@ Login Succeeded
 
 ## Verify Patching
 
->[!Note]
+>[!Warning]
 > Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries in the relative container layer, rather than addressing application dependencies.  
 
 To assess the effectiveness of patching, you may conduct a scan using [Trivy](https://github.com/aquasecurity/trivy) initially on one of the original images:  
