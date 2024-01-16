@@ -13,8 +13,7 @@ jobs:
           fail-fast: true
           matrix:
             images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
-                    'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0']
-            # images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
+                    'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0', 'docker.io/library/python:3.9.18-bullseye']
 
         steps:
         - name: Install Cosign
@@ -49,7 +48,6 @@ jobs:
             PATCHED_TAG_SBOM=$(echo "${{matrix.images}}" | tr '/:' '-')
             echo "PATCHED_TAG=${IMMUNIZED_TAG}" >> $GITHUB_ENV
             echo "PATCHED_TAG_SBOM=${PATCHED_TAG_SBOM}" >> $GITHUB_ENV
-
 
         - name: Copa Action
           if: steps.vuln_count.outputs.vuln_count != '0'
