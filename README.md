@@ -2,13 +2,13 @@
 
 [![patch](https://github.com/R3DRUN3/immunize/actions/workflows/patch.yaml/badge.svg)](https://github.com/R3DRUN3/immunize/actions/workflows/patch.yaml)
 
-Pipeline for patching vulnerable container images 📦🛡️
+Pipeline for patching vulnerable container images 💉📦
 
 ## Abstract
 The present is a repository containing a [Github action](https://github.com/features/actions) to patch vulnerable container images with [copacetic](https://github.com/project-copacetic/copacetic).  
 
 > [!Note]
-> The pateched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
+> The patched images can be found [here](https://github.com/R3DRUN3?tab=packages&repo_name=immunize).  
 
 ## Instructions
 
@@ -45,11 +45,11 @@ This job is triggered on every push event (excluding changes to README.md) and f
 1. **Docker Push Patched Image:**
    - Pushes the patched Docker image to GitHub Container Registry for storage and distribution.  
 1. **Produce Image SBOM:**
-   - Produce a *Software Bill of Material* for the pushed image.  
+   - Produce a *Software Bill of Material* using the `anchore/sbom-action` for the pushed image.  
 1. **Sign image with Cosign:**  
    - Sign the pushed image with *Cosign*  
 1. **Attest the Image with SBOM**:
-   - Attest the image with the SBOM.
+   - Attest the image using the SBOM as a predicate via cosign.
 
 
 ## Send-Mail-Report Job
@@ -84,7 +84,7 @@ Login Succeeded
 ## Verify Patching
 
 >[!Warning]
-> Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries in the relative container layer, rather than addressing application dependencies.  
+> Please be aware that *Copacetic* focuses on rectifying vulnerabilities within the operating system's libraries in the corresponding image layer, rather than addressing application dependencies.  
 
 To assess the effectiveness of patching, you may conduct a scan using [Trivy](https://github.com/aquasecurity/trivy) initially on one of the original images:  
 ```console
@@ -98,8 +98,7 @@ Total: 41 (UNKNOWN: 0, LOW: 11, MEDIUM: 21, HIGH: 9, CRITICAL: 0)
 
 And then on the immunized version of that same image:  
 ```console
-docker pull ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized \
-&& trivy image ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized
+trivy image ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized
 ```  
 
 Output for OS CVEs:  
@@ -111,7 +110,7 @@ As you can see the latest has way less CVEs than the former!
 
 ## Verify Image Signatures and Attestations
 All the patched OCI images produced by the pipeline are signed with [cosign](https://github.com/sigstore/cosign).  
-In order to verify the signature, adapt the following command:  
+In order to verify the signature, adapt the following command to the desired image:  
 ```console
 cosign verify --key cosign/cosign.pub ghcr.io/r3drun3/immunize/docker.io/library/node:18.17.1-slim-immunized
 ```   
@@ -128,19 +127,19 @@ The following checks were performed on each of these signatures:
 [{"critical":{"identity":{"docker-reference":"ghcr.io/r3drun3/immunize/docker.io/library/node"},"image":{"docker-manifest-digest":"sha256:19940c59087a363148b44c56447186d97d6afbc2165727b2d0a2ea0ce43b69fd"},"type":"cosign container image signature"},"optional":{"Bundle":{"SignedEntryTimestamp":"MEUCIHo1Jja4t0+OPDYqHo/B/p7HUtP+/i8ZD+fu6Rb57Lw9AiEA7N1i7JDiIvRxu9QtYOrrS8Y+AeekHMWNE3p7GJAbHAs=","Payload":{"body":"eyJhcGlWZXJzaW9uIjoiMC4wLjEiLCJraW5kIjoiaGFzaGVkcmVrb3JkIiwic3BlYyI6eyJkYXRhIjp7Imhhc2giOnsiYWxnb3JpdGhtIjoic2hhMjU2IiwidmFsdWUiOiI2MmM1NWZhNGQxMjE5YTk5ZWJhMjkzY2E0YzNiNmFiN2Y1Y2QxNmE5YjFmMmY2OWVhNDlmM2NkZDhkYzg4ODcwIn19LCJzaWduYXR1cmUiOnsiY29udGVudCI6Ik1FWUNJUUMxenUwajdZejVLUWpwYU5sTnkvRkpUT3FQZ0k4RHcrbVR6Z2s4R2JjV1lnSWhBTlBaTzQ3TFNvcW82MGJYWXd4aWo1SkFDVmxpZjZpdmpTNlVaRlJMMHdpMyIsInB1YmxpY0tleSI6eyJjb250ZW50IjoiTFMwdExTMUNSVWRKVGlCUVZVSk1TVU1nUzBWWkxTMHRMUzBLVFVacmQwVjNXVWhMYjFwSmVtb3dRMEZSV1VsTGIxcEplbW93UkVGUlkwUlJaMEZGTWxwdllrWlVTWFI1VDFodllqbHdTM053VWpCaFJGTmhXR3BXYWdwRVJYQTRZbkpFYzJ0Q05rOXVUVlY0TjBkUlJXSnNSREpTUkVKQ2JWQTFWRUZMZG5Od1lYa3ljM2x3TkZvck5YTXlWalk1ZGxNNFQwdG5QVDBLTFMwdExTMUZUa1FnVUZWQ1RFbERJRXRGV1MwdExTMHRDZz09In19fX0=","integratedTime":1705317423,"logIndex":63825695,"logID":"c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d"}}}}]
 ```   
 
-The pipeline also produce an SBOM in [SPDX](https://spdx.github.io/spdx-spec/v2.3/) format and create an [in-toto attestation](https://docs.sigstore.dev/verifying/attestation/) for the image with that artifact using Cosign.  
+The pipeline, for every image, produces an SBOM in [SPDX](https://spdx.github.io/spdx-spec/v2.3/) format and create an [in-toto attestation](https://docs.sigstore.dev/verifying/attestation/) for the image using that artifact as a predicate.  
 
 > [!Note]
 > You can learn the difference between SBOMs and Attestations [here](https://edu.chainguard.dev/open-source/sbom/sboms-and-attestations).
 
 
-In order to verify the image attestation with cosign, use the following command:  
+In order to verify the image attestation with cosign, use the following command (adapt for the desired image):  
 ```console
 export IMAGE=ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized
 cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE
 ```   
 
-The above command verifies and returns the uploaded artifact data in base64 format.  
+The above command verifies and returns the uploaded artifact data in *base64* format.  
 We can decode it to query the artifact (in this case, the SBOM file):  
 ```console
 cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -D | jq .
