@@ -124,8 +124,3 @@ jobs:
             EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
             EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
             EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-
-
-
-#export IMAGE=ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized
-#cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -d | jq
