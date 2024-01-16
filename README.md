@@ -108,6 +108,29 @@ Total: 18 (UNKNOWN: 0, LOW: 11, MEDIUM: 7, HIGH: 0, CRITICAL: 0)
 
 As you can see the latest has way less CVEs than the former!  
 
+The benefit becomes even more apparent when patching old images.  
+For instance, observe the difference between this:  
+```console
+trivy image python:3.5.10-slim
+
+Total: 307 (UNKNOWN: 8, LOW: 101, MEDIUM: 81, HIGH: 87, CRITICAL: 30)
+```   
+
+and the immunized one:  
+```console  
+trivy image ghcr.io/r3drun3/immunize/docker.io/library/python:3.5.10-slim-immunized
+
+Total: 148 (UNKNOWN: 0, LOW: 97, MEDIUM: 26, HIGH: 23, CRITICAL: 2)
+```  
+
+Critical vulnerabilities have been reduced by ~93%!  
+
+> [!Warning]
+> Even though the benefits are more apparent in older images, it is always advisable to prioritize new images and the most recent tags whenever possible.  
+
+
+
+
 ## Verify Image Signatures and Attestations
 All the patched OCI images produced by the pipeline are signed with [cosign](https://github.com/sigstore/cosign).  
 In order to verify the signature, adapt the following command for the desired image:  
