@@ -12,7 +12,7 @@ jobs:
         strategy:
           fail-fast: true
           matrix:
-            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18', 'docker.io/library/maven:3.3.1',
                     'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0', 'docker.io/library/python:3.9.18-bullseye']
 
         steps:
