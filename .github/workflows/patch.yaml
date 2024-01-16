@@ -85,6 +85,7 @@ jobs:
         - name: Produce Image SBOM
           uses: anchore/sbom-action@v0
           with:
+            image: "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
             artifact-name: ${{ env.PATCHED_TAG_SBOM }}.spdx.json
 
         - name: Sign image with Cosign
