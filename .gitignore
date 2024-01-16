@@ -3,3 +3,6 @@
 
 # cosign
 cosign.key
+
+# local sbom test
+sbom.json

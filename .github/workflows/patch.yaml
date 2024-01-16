@@ -12,9 +12,9 @@ jobs:
         strategy:
           fail-fast: true
           matrix:
-            # images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
-            #         'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0']
-            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
+            images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18',
+                    'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0']
+            # images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0']
 
         steps:
         - name: Install Cosign
@@ -110,7 +110,6 @@ jobs:
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
 
-
     send-mail-report:
       runs-on: ubuntu-latest
       needs: immunize
@@ -129,4 +128,4 @@ jobs:
 
 
 #export IMAGE=ghcr.io/r3drun3/immunize/docker.io/openpolicyagent/opa:0.46.0-immunized
-#cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -d 
+#cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -d | jq
