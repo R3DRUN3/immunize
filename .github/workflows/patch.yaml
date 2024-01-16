@@ -111,7 +111,14 @@ jobs:
 
         - name: Attach SBOM to Image
           run: |
-            cosign attach sbom --sbom "${{ env.PATCHED_TAG_SBOM }}.spdx" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
+            echo "${{ env.PATCHED_TAG_SBOM }}"
+            SBOM_FILE=$(find /tmp/sbom-action-* -name "*${{ env.PATCHED_TAG_SBOM }}*.spdx" -type f)
+            echo "${SBOM_FILE}"
+            if [ -z "$SBOM_FILE" ]; then
+              echo "Error: .spdx file not found"
+              exit 1
+            fi
+            cosign attach sbom --sbom "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
 
 
 
