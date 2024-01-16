@@ -169,6 +169,8 @@ The following checks were performed on each of these signatures:
   "predicate": "[SPDX-SBOM-HERE]"
 }
 ```   
+In order to better understand the previous output, take a look at the [in-toto attestation framework spec](https://github.com/in-toto/attestation/blob/main/spec/README.md#in-toto-attestation-framework-spec).  
+
 
 
 
