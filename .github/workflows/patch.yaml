@@ -96,9 +96,10 @@ jobs:
         
         - name: Attach SBOM to Image
           run: |
-            cosign attach sbom --sbom env://PATCHED_TAG_SBOM "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
-          env:
-            PATCHED_TAG_SBOM: ${{ env.PATCHED_TAG_SBOM }}.spdx
+            cosign attach sbom --sbom "${{ env.PATCHED_TAG_SBOM }}.spdx" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
+          # env:
+          #   PATCHED_TAG_SBOM: ${{ env.PATCHED_TAG_SBOM }}.spdx
+
 
         # - name: Sign SBOM with Cosign
         #   run: |
