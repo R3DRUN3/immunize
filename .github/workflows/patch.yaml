@@ -46,7 +46,10 @@ jobs:
           run: |
             TAG=$(echo "${{ matrix.images }}" | grep -oP '(?<=:).*' | grep -oP '^[^/]+')
             IMMUNIZED_TAG="${TAG}-immunized"
+            PATCHED_TAG_SBOM=$(echo "${IMMUNIZED_TAG}" | tr '/:' '-')
             echo "PATCHED_TAG=${IMMUNIZED_TAG}" >> $GITHUB_ENV
+            echo "PATCHED_TAG_SBOM=${PATCHED_TAG_SBOM}" >> $GITHUB_ENV
+
 
         - name: Copa Action
           if: steps.vuln_count.outputs.vuln_count != '0'
@@ -78,6 +81,11 @@ jobs:
           if: steps.login.conclusion == 'success'
           run: |
             docker push ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}
+
+        - name: Produce Image SBOM
+          uses: anchore/sbom-action@v0
+          with:
+            artifact-name: ${{ env.PATCHED_TAG_SBOM }}.spdx
 
         - name: Sign image with Cosign
           run: |
