@@ -170,6 +170,9 @@ The following checks were performed on each of these signatures:
 }
 ```   
 In order to better understand the previous output, take a look at the [in-toto attestation framework spec](https://github.com/in-toto/attestation/blob/main/spec/README.md#in-toto-attestation-framework-spec).  
+In ordert to understand how in-toto verifies an attestation, take a look at the [in-toto validation model](https://github.com/in-toto/attestation/blob/main/docs/validation.md).  
+
+
 
 
 
