@@ -94,19 +94,6 @@ jobs:
             COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
             COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
 
-        - name: Sign SBOM with Cosign
-          run: |
-            echo "${{ env.PATCHED_TAG_SBOM }}"
-            SBOM_FILE=$(find /tmp/sbom-action-* -name "*${{ env.PATCHED_TAG_SBOM }}*.spdx" -type f)
-            if [ -z "$SBOM_FILE" ]; then
-              echo "Error: .spdx file not found"
-              exit 1
-            fi
-            cosign sign --yes --key env://COSIGN_PRIVATE_KEY "${SBOM_FILE}"
-          env:
-            COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-            COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-
         - name: Attach SBOM to Image
           run: |
             echo "${{ env.PATCHED_TAG_SBOM }}"
@@ -115,8 +102,9 @@ jobs:
               echo "Error: .spdx file not found"
               exit 1
             fi
-            cosign attach sbom --sbom "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
+            cosign attest --key env://COSIGN_PRIVATE_KEY --type spdx --predicate "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
 
+        # cosign attach sbom --sbom "${SBOM_FILE}" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
         # - name: Attach SBOM to Image
         #   run: |
           # cosign attach sbom --sbom "${{ env.PATCHED_TAG_SBOM }}.spdx" "ghcr.io/r3drun3/immunize/${{ steps.copa.outputs.patched-image }}"
