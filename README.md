@@ -1,6 +1,7 @@
 # IMMUNIZE
 
-[![patch](https://github.com/R3DRUN3/immunize/actions/workflows/patch.yaml/badge.svg)](https://github.com/R3DRUN3/immunize/actions/workflows/patch.yaml)
+[![patch](https://github.com/R3DRUN3/immunize/actions/workflows/patch.yaml/badge.svg)](https://github.com/R3DRUN3/immunize/actions/workflows/patch.yaml)  
+<img src="images/immunize-logo.png" alt="logo" width="150" height="130"/>
 
 Pipeline for patching vulnerable container images 💉📦
 
