@@ -4,5 +4,6 @@
 # cosign
 cosign.key
 
-# local sbom test
+# local sbom tests
 sbom.json
+final-spdx.json
