@@ -210,16 +210,17 @@ The following checks were performed on each of these signatures:
 }
 ```   
 
+
+In order to better understand the previous output, take a look at the [in-toto attestation framework spec](https://github.com/in-toto/attestation/blob/main/spec/README.md#in-toto-attestation-framework-spec).  
+In ordert to understand how in-toto verifies an attestation, take a look at the [in-toto validation model](https://github.com/in-toto/attestation/blob/main/docs/validation.md).  
+If you want to learn how to enforce the SBOM attestations on your kubernetes cluster take a look at [this repo](https://github.com/R3DRUN3/cyberhall/tree/main/k8s-security/k8s-sigstore).  
+
 If you want to produce a single json file for the sbom in SPDX format, you can use the following command:  
 ```console
 cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -D | jq -r '.predicate | fromjson' > final-spdx.json
 ```   
 
 
-
-In order to better understand the previous output, take a look at the [in-toto attestation framework spec](https://github.com/in-toto/attestation/blob/main/spec/README.md#in-toto-attestation-framework-spec).  
-In ordert to understand how in-toto verifies an attestation, take a look at the [in-toto validation model](https://github.com/in-toto/attestation/blob/main/docs/validation.md).  
-If you want to learn how to enforce the SBOM attestations on your kubernetes cluster take a look at [this repo](https://github.com/R3DRUN3/cyberhall/tree/main/k8s-security/k8s-sigstore).  
 
 
 
