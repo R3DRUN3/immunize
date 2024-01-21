@@ -221,6 +221,28 @@ cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .
 ```   
 
 
+Starting from that command you can then use [open source tools](https://spdx.dev/use/tools/open-source-tools/) or [this website](https://tools.spdx.org/app/) to do validation and other operations on the SBOM.  
+
+For example, let's say I want to validate the SBOM for the `ghcr.io/r3drun3/immunize/docker.io/library/python:3.5.10-slim-immunized` image.  
+I will start by obtaining the SBOM in Json format:  
+
+```console
+export IMAGE=ghcr.io/r3drun3/immunize/docker.io/library/python:3.5.10-slim-immunized
+cosign verify-attestation --type spdx --key ./cosign/cosign.pub $IMAGE | jq -r .payload | base64 -D | jq -r '.predicate | fromjson' > final-spdx.json
+```   
+
+Then I will head to the aforementioned website, select *validate* and upload my json file:  
+![valid](images/valid-sbom.png)  
+
+
+If I want to produce an XLSX spreadsheet, I will select *convert* on the website, enter the format, upload the file and then download the produced spreadsheet:  
+![valid](images/spreadsheet.png)  
+
+
+
+
+
+
 
 
 
