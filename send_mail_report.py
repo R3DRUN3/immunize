@@ -4,23 +4,17 @@ import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
+# Get the path to the script directory
+script_directory = os.path.dirname(__file__)
 
-# Get the path to the Github Action YAML file
-yaml_file_path = os.path.join(os.path.dirname(__file__), '.github/workflows/patch.yaml')
-
-# Read the YAML file to get the patched image list
-with open(yaml_file_path, 'r') as yaml_file:
-    yaml_content = yaml.load(yaml_file, Loader=yaml.FullLoader)
-    patched_images = yaml_content.get('jobs', {}).get('immunize', {}).get('strategy', {}).get('matrix', {}).get('images', [])
-
-print("Patched images:", patched_images)
-current_timestamp = datetime.now().strftime('%Y-%m-%d')
 # Prepare the HTML content
+current_timestamp = datetime.now().strftime('%Y-%m-%d')
 subject = 'IMMUNIZE: OCI Images Patching Report'
-html_body = '<h1>Patched Images 💉 {}</h1><ul>'.format(current_timestamp)
-for image in patched_images:
-    html_body += f'<li>{image}</li>'
+html_body = f'<h1>Patched Images 💉 {current_timestamp}</h1><ul>'
+
+
 html_body += '</ul><br />'
 html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
 html_body += '<br /><br />'
@@ -39,6 +33,15 @@ message['From'] = email_address
 message['To'] = ', '.join(recipients)
 message['Subject'] = subject
 message.attach(MIMEText(html_body, 'html'))
+# Get all files named "*-openvex-report" in root of the project folder
+report_files = [filename for filename in os.listdir(script_directory) if filename.endswith("-openvex-report")]
+# Attach reports to the email
+for report_file in report_files:
+    html_body += f'<li>{report_file}</li>'
+    with open(os.path.join(script_directory, report_file), 'rb') as file:
+        part = MIMEApplication(file.read(), Name=os.path.basename(report_file))
+        part['Content-Disposition'] = f'attachment; filename="{report_file}"'
+        message.attach(part)
 
 # Connect to the GMAIL SMTP server and send the emails
 with smtplib.SMTP('smtp.gmail.com', 587) as server:
