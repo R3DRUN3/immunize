@@ -60,16 +60,16 @@ jobs:
             patched-tag: ${{ env.PATCHED_TAG }}
             output: ${{ env.PATCHED_TAG_SBOM }}-openvex-report.json
 
-        - name: list files
-          run: |
-            ls -al
-            cat test.json
-            sudo cat test.json
+        # - name: list files
+        #   run: |
+        #     ls -al
+        #     cat test.json
+        #     sudo cat test.json
 
         - name: Archive openvex vuln report
           uses: actions/upload-artifact@v4
           with:
-            name: ${{ env.PATCHED_TAG_SBOM }}-${{ github.sha }}-openvex-report
+            name: ${{ env.PATCHED_TAG_SBOM }}-openvex-report
             path: ${{ env.PATCHED_TAG_SBOM }}-openvex-report.json
 
         - name: Log into ghcr
@@ -126,6 +126,8 @@ jobs:
       steps:
         - name: Checkout Repository
           uses: actions/checkout@v3
+
+        - uses: actions/download-artifact@v4
 
         - name: Send Mail Report
           run: |
