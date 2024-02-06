@@ -12,13 +12,7 @@ script_directory = os.path.dirname(__file__)
 # Prepare the HTML content
 current_timestamp = datetime.now().strftime('%Y-%m-%d')
 subject = 'IMMUNIZE: OCI Images Patching Report'
-html_body = f'<h1>Patched Images 💉 {current_timestamp}</h1><ul>'
-
-
-html_body += '</ul><br />'
-html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
-html_body += '<br /><br />'
-html_body += '<h2>Stay Safe! 💪</h2>'
+html_body = f'<h1>Patched Images 💉 {current_timestamp}</h1>'
 
 # Get email and password from GitHub secrets
 email_address = os.environ.get('EMAIL_ADDRESS', '')
@@ -32,16 +26,27 @@ message = MIMEMultipart()
 message['From'] = email_address
 message['To'] = ', '.join(recipients)
 message['Subject'] = subject
+
+# Get all directories with the name "*-openvex-report" in root of the project folder
+report_directories = [dirname for dirname in os.listdir(script_directory) if os.path.isdir(os.path.join(script_directory, dirname)) and dirname.endswith("-openvex-report")]
+
+# Iterate through report directories
+for report_dir in report_directories:
+    report_dir_path = os.path.join(script_directory, report_dir)
+    # Get all files in the report directory
+    report_files = [filename for filename in os.listdir(report_dir_path) if os.path.isfile(os.path.join(report_dir_path, filename))]
+    # Attach reports to the email
+    for report_file in report_files:
+        with open(os.path.join(report_dir_path, report_file), 'rb') as file:
+            part = MIMEApplication(file.read(), Name=os.path.basename(report_file))
+            part['Content-Disposition'] = f'attachment; filename="{report_file}"'
+            message.attach(part)
+
+html_body += '<br />'
+html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
+html_body += '<br /><br />'
+html_body += '<h2>Stay Safe! 💪</h2>'
 message.attach(MIMEText(html_body, 'html'))
-# Get all files named "*-openvex-report" in root of the project folder
-report_files = [filename for filename in os.listdir(script_directory) if filename.endswith("-openvex-report")]
-# Attach reports to the email
-for report_file in report_files:
-    html_body += f'<li>{report_file}</li>'
-    with open(os.path.join(script_directory, report_file), 'rb') as file:
-        part = MIMEApplication(file.read(), Name=os.path.basename(report_file))
-        part['Content-Disposition'] = f'attachment; filename="{report_file}"'
-        message.attach(part)
 
 # Connect to the GMAIL SMTP server and send the emails
 with smtplib.SMTP('smtp.gmail.com', 587) as server:
