@@ -49,4 +49,4 @@ with smtplib.SMTP('smtp.gmail.com', 587) as server:
     server.login(email_address, email_password)
     server.sendmail(email_address, recipients, message.as_string())
 
-print('Emails sent successfully!')
+print('Emails sent successfully!!')
