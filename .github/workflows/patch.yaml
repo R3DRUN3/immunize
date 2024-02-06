@@ -58,21 +58,7 @@ jobs:
             image: ${{ matrix.images }}
             image-report: 'report.json'
             patched-tag: ${{ env.PATCHED_TAG }}
-            output: test.json
-            format: 'openvex'
-            # buildkit-version: 'v0.11.6'
-            # copa-version: '0.3.0'
-
-        # - name: List files
-        #   run: |
-        #       echo "Current repo:"
-        #       pwd
-        #       echo "ls in current repo:"
-        #       ls -lah
-        #       echo "current repo tree"
-        #       tree
-        #       echo "tree in /home/runner/work"
-        #       cd /home/runner/work && tree
+            output: ${{ env.PATCHED_TAG_SBOM }}-openvex-report.json
 
         - name: list files
           run: |
@@ -80,13 +66,11 @@ jobs:
             cat test.json
             sudo cat test.json
 
-
-
         - name: Archive openvex vuln report
           uses: actions/upload-artifact@v4
           with:
-            name: ${{ env.PATCHED_TAG_SBOM }}-openvex-report
-            path: test.json
+            name: ${{ env.PATCHED_TAG_SBOM }}-${{ github.sha }}-openvex-report
+            path: ${{ env.PATCHED_TAG_SBOM }}-openvex-report.json
 
         - name: Log into ghcr
           if: steps.copa.conclusion == 'success'
