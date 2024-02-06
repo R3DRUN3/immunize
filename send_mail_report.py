@@ -1,18 +1,31 @@
+from email.mime.application import MIMEApplication
 import os
 import yaml
 import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
 
-# Get the path to the script directory
-script_directory = os.path.dirname(__file__)
 
-# Prepare the HTML content
+# Get the path to the Github Action YAML file
+yaml_file_path = os.path.join(os.path.dirname(__file__), '.github/workflows/patch.yaml')
+
+# Read the YAML file to get the patched image list
+with open(yaml_file_path, 'r') as yaml_file:
+    yaml_content = yaml.load(yaml_file, Loader=yaml.FullLoader)
+    patched_images = yaml_content.get('jobs', {}).get('immunize', {}).get('strategy', {}).get('matrix', {}).get('images', [])
+
+print("Patched images:", patched_images)
 current_timestamp = datetime.now().strftime('%Y-%m-%d')
+# Prepare the HTML content
 subject = 'IMMUNIZE: OCI Images Patching Report'
-html_body = f'<h1>Patched Images 💉 {current_timestamp}</h1><ul>'
+html_body = '<h1>Patched Images 💉 {}</h1><ul>'.format(current_timestamp)
+for image in patched_images:
+    html_body += f'<li>{image}</li>'
+html_body += '</ul><br />'
+html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
+html_body += '<br /><br />'
+html_body += '<h2>Stay Safe! 💪</h2>'
 
 # Get email and password from GitHub secrets
 email_address = os.environ.get('EMAIL_ADDRESS', '')
@@ -26,13 +39,16 @@ message = MIMEMultipart()
 message['From'] = email_address
 message['To'] = ', '.join(recipients)
 message['Subject'] = subject
+message.attach(MIMEText(html_body, 'html'))
+
+# Get the path to the script directory
+script_directory = os.path.dirname(__file__)
 
 # Get all directories with the name "*-openvex-report" in root of the project folder
 report_directories = [dirname for dirname in os.listdir(script_directory) if os.path.isdir(os.path.join(script_directory, dirname)) and dirname.endswith("-openvex-report")]
 
 # Iterate through report directories
 for report_dir in report_directories:
-    html_body += f'<li>Files in {report_dir}:</li>'
     report_dir_path = os.path.join(script_directory, report_dir)
     # Get all files in the report directory
     report_files = [filename for filename in os.listdir(report_dir_path) if os.path.isfile(os.path.join(report_dir_path, filename))]
@@ -42,13 +58,7 @@ for report_dir in report_directories:
             part = MIMEApplication(file.read(), Name=os.path.basename(report_file))
             part['Content-Disposition'] = f'attachment; filename="{report_file}"'
             message.attach(part)
-            html_body += f'<li>{report_file}</li>'
 
-html_body += '</ul><br />'
-html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
-html_body += '<br /><br />'
-html_body += '<h2>Stay Safe! 💪</h2>'
-message.attach(MIMEText(html_body, 'html'))
 
 # Connect to the GMAIL SMTP server and send the emails
 with smtplib.SMTP('smtp.gmail.com', 587) as server:
@@ -56,4 +66,19 @@ with smtplib.SMTP('smtp.gmail.com', 587) as server:
     server.login(email_address, email_password)
     server.sendmail(email_address, recipients, message.as_string())
 
-print('Emails sent successfully!!')
+print('Emails sent successfully!')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
