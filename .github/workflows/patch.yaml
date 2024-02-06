@@ -66,8 +66,13 @@ jobs:
           run: |
               echo "Current repo:"
               pwd
-              echo "ln in current repo:"
-              ls -l
+              echo "ls in current repo:"
+              ls -lah
+              echo "current repo tree"
+              tree
+              echo "ls in tmp"
+              ls -lah tmp
+
 
 
         - name: Archive openvex vuln report
