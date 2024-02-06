@@ -70,8 +70,10 @@ jobs:
               ls -lah
               echo "current repo tree"
               tree
-              echo "ls in tmp"
-              ls -lah tmp
+              echo "tree in /home/runner/"
+              cd /home/runner/ && tree
+              echo "tree in /"
+              cd / && tree
 
 
 
