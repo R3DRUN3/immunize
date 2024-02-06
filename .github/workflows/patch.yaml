@@ -58,9 +58,14 @@ jobs:
             image: ${{ matrix.images }}
             image-report: 'report.json'
             patched-tag: ${{ env.PATCHED_TAG }}
-            output: ${{ env.PATCHED_TAG }}.json
+            output: ${{ env.PATCHED_TAG_SBOM }}.openvex.json
             # buildkit-version: 'v0.11.6'
             # copa-version: '0.3.0'
+        - name: Archive code coverage results
+          uses: actions/upload-artifact@v4
+          with:
+            name: ${{ env.PATCHED_TAG_SBOM }}-openvex-report
+            path: ${{ env.PATCHED_TAG_SBOM }}.openvex.json
 
         - name: Log into ghcr
           if: steps.copa.conclusion == 'success'
