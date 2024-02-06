@@ -127,7 +127,12 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v3
 
-        - uses: actions/download-artifact@v4
+        - name: Download openvex reports
+          uses: actions/download-artifact@v4
+
+        - name: List files
+          run : |
+            ls -lah
 
         - name: Send Mail Report
           run: |
