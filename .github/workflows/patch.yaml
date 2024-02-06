@@ -58,21 +58,27 @@ jobs:
             image: ${{ matrix.images }}
             image-report: 'report.json'
             patched-tag: ${{ env.PATCHED_TAG }}
-            output: ${{ env.PATCHED_TAG_SBOM }}.openvex.json
+            output: test.json
             format: 'openvex'
             # buildkit-version: 'v0.11.6'
             # copa-version: '0.3.0'
 
-        - name: List files
+        # - name: List files
+        #   run: |
+        #       echo "Current repo:"
+        #       pwd
+        #       echo "ls in current repo:"
+        #       ls -lah
+        #       echo "current repo tree"
+        #       tree
+        #       echo "tree in /home/runner/work"
+        #       cd /home/runner/work && tree
+
+        - name: list files
           run: |
-              echo "Current repo:"
-              pwd
-              echo "ls in current repo:"
-              ls -lah
-              echo "current repo tree"
-              tree
-              echo "tree in /home/runner/work"
-              cd /home/runner/work && tree
+            ls -al
+            cat test.json
+            sudo cat test.json
 
 
 
