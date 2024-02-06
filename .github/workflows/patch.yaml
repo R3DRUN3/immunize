@@ -53,7 +53,7 @@ jobs:
         - name: Copa Action
           if: steps.vuln_count.outputs.vuln_count != '0'
           id: copa
-          uses: sozercan/copa-action@out-vex
+          uses: project-copacetic/copa-action@0fb0b7e8d88e3f3b380bda1ede255a7128327434
           with:
             image: ${{ matrix.images }}
             image-report: 'report.json'
@@ -86,7 +86,7 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: ${{ env.PATCHED_TAG_SBOM }}-openvex-report
-            path: ${{ env.PATCHED_TAG_SBOM }}.openvex.json
+            path: test.json
 
         - name: Log into ghcr
           if: steps.copa.conclusion == 'success'
