@@ -21,8 +21,8 @@ jobs:
           uses: sigstore/cosign-installer@v3.1.1
           with:
             cosign-release: 'v2.2.2'
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
+        # - name: Set up Docker Buildx
+        #   uses: docker/setup-buildx-action@dedd61cf5d839122591f5027c89bf3ad27691d18
 
         - name: Generate Trivy Report
           uses: aquasecurity/trivy-action@69cbbc0cbbf6a2b0bab8dcf0e9f2d7ead08e87e4
@@ -53,7 +53,7 @@ jobs:
         - name: Copa Action
           if: steps.vuln_count.outputs.vuln_count != '0'
           id: copa
-          uses: project-copacetic/copa-action@v1.1.0
+          uses: project-copacetic/copa-action@0fb0b7e8d88e3f3b380bda1ede255a7128327434
           with:
             image: ${{ matrix.images }}
             image-report: 'report.json'
