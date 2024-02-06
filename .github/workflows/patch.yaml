@@ -61,7 +61,16 @@ jobs:
             output: ${{ env.PATCHED_TAG_SBOM }}.openvex.json
             # buildkit-version: 'v0.11.6'
             # copa-version: '0.3.0'
-        - name: Archive code coverage results
+
+        - name: List files
+          run: |
+              echo "Current repo:"
+              pwd
+              echo "ln in current repo:"
+              ls -l
+
+
+        - name: Archive openvex vuln report
           uses: actions/upload-artifact@v4
           with:
             name: ${{ env.PATCHED_TAG_SBOM }}-openvex-report
