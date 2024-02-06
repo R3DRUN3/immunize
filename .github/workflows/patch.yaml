@@ -59,6 +59,7 @@ jobs:
             image-report: 'report.json'
             patched-tag: ${{ env.PATCHED_TAG }}
             output: ${{ env.PATCHED_TAG_SBOM }}.openvex.json
+            format: 'openvex'
             # buildkit-version: 'v0.11.6'
             # copa-version: '0.3.0'
 
