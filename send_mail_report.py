@@ -12,7 +12,7 @@ script_directory = os.path.dirname(__file__)
 # Prepare the HTML content
 current_timestamp = datetime.now().strftime('%Y-%m-%d')
 subject = 'IMMUNIZE: OCI Images Patching Report'
-html_body = f'<h1>Patched Images 💉 {current_timestamp}</h1>'
+html_body = f'<h1>Patched Images 💉 {current_timestamp}</h1><ul>'
 
 # Get email and password from GitHub secrets
 email_address = os.environ.get('EMAIL_ADDRESS', '')
@@ -32,6 +32,7 @@ report_directories = [dirname for dirname in os.listdir(script_directory) if os.
 
 # Iterate through report directories
 for report_dir in report_directories:
+    html_body += f'<li>Files in {report_dir}:</li>'
     report_dir_path = os.path.join(script_directory, report_dir)
     # Get all files in the report directory
     report_files = [filename for filename in os.listdir(report_dir_path) if os.path.isfile(os.path.join(report_dir_path, filename))]
@@ -41,8 +42,9 @@ for report_dir in report_directories:
             part = MIMEApplication(file.read(), Name=os.path.basename(report_file))
             part['Content-Disposition'] = f'attachment; filename="{report_file}"'
             message.attach(part)
+            html_body += f'<li>{report_file}</li>'
 
-html_body += '<br />'
+html_body += '</ul><br />'
 html_body += 'check the full catalog 📚 <a href="https://github.com/R3DRUN3?tab=packages&repo_name=immunize">here</a> !'
 html_body += '<br /><br />'
 html_body += '<h2>Stay Safe! 💪</h2>'
