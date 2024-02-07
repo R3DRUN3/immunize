@@ -15,7 +15,7 @@ jobs:
             # images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0', 'mcr.microsoft.com/dotnet/aspnet:7.0.15-alpine3.18', 'docker.io/library/python:3.10.10-alpine3.17',
                     #'docker.io/library/golang:1.18.10', 'docker.io/library/node:18.17.1-slim', 'docker.io/library/rust:1.69.0', 'docker.io/library/python:3.5.10-slim']
             images: ['docker.io/library/nginx:1.21.6', 'docker.io/openpolicyagent/opa:0.46.0',
-                      'gcr.io/distroless/python3-debian12', 'gcr.io/distroless/nodejs20-debian11', 'gcr.io/distroless/java17-debian12']
+                      'gcr.io/distroless/python3-debian12:latest', 'gcr.io/distroless/nodejs20-debian11:latest', 'gcr.io/distroless/java17-debian12:latest']
 
         steps:
         - name: Install Cosign
