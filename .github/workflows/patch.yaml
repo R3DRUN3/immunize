@@ -60,11 +60,11 @@ jobs:
             patched-tag: ${{ env.PATCHED_TAG }}
             output: ${{ env.PATCHED_TAG_SBOM }}-openvex-report.json
 
-        # - name: list files
-        #   run: |
-        #     ls -al
-        #     cat test.json
-        #     sudo cat test.json
+        - name: list files
+          run: |
+            ls -al
+            cat test.json
+            sudo cat test.json
 
         - name: Archive openvex vuln report
           uses: actions/upload-artifact@v4
